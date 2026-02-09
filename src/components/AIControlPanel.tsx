@@ -6,17 +6,20 @@ interface AIControlPanelProps {
 }
 
 export default function AIControlPanel({ tradingState, onToggle }: AIControlPanelProps) {
-  // Use marketRegime from tradingState
   const { isEnabled, marketRegime } = tradingState;
   
   return (
-    <div className="ai-control-panel">
-      <h3>AI Trading Engine</h3>
-      <div className="status">{isEnabled ? 'Enabled' : 'Disabled'}</div>
-      <div className="regime">Market Regime: {marketRegime}</div>
-      <button onClick={onToggle}>
-        {isEnabled ? 'Disable' : 'Enable'}
-      </button>
+    <div className="ai-control">
+      <div 
+        className={`ai-toggle ${isEnabled ? 'active' : ''}`}
+        onClick={onToggle}
+      ></div>
+      <span className={`ai-status ${isEnabled ? 'active' : ''}`}>
+        AI Trading Engine {isEnabled ? 'Enabled' : 'Disabled'}
+      </span>
+      <div className="market-regime">
+        📈 {marketRegime} — Directional bias detected
+      </div>
     </div>
   );
 }
