@@ -26,70 +26,110 @@ export default function DemoTrading({
     onOpenPosition(symbol, side, size);
   };
 
-  // Get current price for selected symbol
   const currentPrice = prices[symbol] || 0;
 
   return (
-    <div className="demo-trading">
-      <h2>Demo Trading Account</h2>
+    <div className="card" style={{ marginTop: '20px' }}>
+      <div className="card-header">
+        <h3>💰 Demo Trading Account</h3>
+      </div>
       
-      <div className="account-stats">
-        <div>Balance: ${balance.toLocaleString()}</div>
-        <div>Equity: ${equity.toLocaleString()}</div>
-      </div>
-
-      <div className="trading-form">
-        <select value={symbol} onChange={e => setSymbol(e.target.value)}>
-          <option value="BTCUSDT">BTC/USDT</option>
-          <option value="ETHUSDT">ETH/USDT</option>
-          <option value="SOLUSDT">SOL/USDT</option>
-        </select>
-
-        <div className="current-price">
-          Current {symbol} Price: ${currentPrice.toLocaleString()}
-        </div>
-
-        <div className="side-buttons">
-          <button 
-            className={side === 'LONG' ? 'active long' : 'long'}
-            onClick={() => setSide('LONG')}
+      <div className="card-body">
+        <div className="trading-panel">
+          <select 
+            className="symbol-select"
+            value={symbol} 
+            onChange={e => setSymbol(e.target.value)}
           >
-            LONG
-          </button>
-          <button 
-            className={side === 'SHORT' ? 'active short' : 'short'}
-            onClick={() => setSide('SHORT')}
-          >
-            SHORT
-          </button>
-        </div>
+            <option value="BTCUSDT">BTC/USDT</option>
+            <option value="ETHUSDT">ETH/USDT</option>
+            <option value="SOLUSDT">SOL/USDT</option>
+          </select>
 
-        <input 
-          type="number" 
-          step="0.01" 
-          value={size} 
-          onChange={e => setSize(parseFloat(e.target.value))}
-          placeholder="Size"
-        />
-
-        <button onClick={handleOpen} className={side.toLowerCase()}>
-          Open {side}
-        </button>
-      </div>
-
-      <div className="positions">
-        <h3>Open Positions ({positions.length})</h3>
-        {positions.map(pos => (
-          <div key={pos.id} className={`position ${pos.side.toLowerCase()}`}>
-            <div>{pos.side} {pos.symbol} @ ${pos.entryPrice.toLocaleString()}</div>
-            <div>Size: {pos.size}</div>
-            <div>Current: ${pos.currentPrice.toLocaleString()}</div>
-            <div className={pos.pnl >= 0 ? 'positive' : 'negative'}>
-              P&L: ${pos.pnl.toFixed(2)} ({pos.pnlPercent.toFixed(2)}%)
-            </div>
-            <button onClick={() => onClosePosition(pos.id)}>Close</button>
+          <div className="current-price">
+            <div className="label">Current {symbol.replace('USDT', '/USDT')} Price</div>
+            <div className="value">${currentPrice.toLocaleString()}</div>
           </div>
-        ))}
+
+          <div className="side-selector">
+            <button 
+              type="button" 
+              className={`side-btn long ${side === 'LONG' ? 'active' : ''}`}
+              onClick={() => setSide('LONG')}
+            >
+              LONG
+            </button>
+            <button 
+              type="button" 
+              className={`side-btn short ${side === 'SHORT' ? 'active' : ''}`}
+              onClick={() => setSide('SHORT')}
+            >
+              SHORT
+            </button>
+          </div>
+
+          <input 
+            type="number" 
+            step="0.01" 
+            value={size} 
+            onChange={e => setSize(parseFloat(e.target.value))}
+            placeholder="Size"
+            className="size-input"
+          />
+
+          <button 
+            onClick={handleOpen} 
+            className={`submit-btn ${side.toLowerCase()}`}
+          >
+            Open {side} Position
+          </button>
+        </div>
+
+        <div className="positions-list" style={{ marginTop: '24px' }}>
+          <h3 style={{ marginBottom: '16px', fontSize: '16px' }}>
+            Open Positions ({positions.length})
+          </h3>
+          
+          {positions.length === 0 ? (
+            <div className="empty-state">No open positions</div>
+          ) : (
+            positions.map(pos => (
+              <div key={pos.id} className={`position-card ${pos.side.toLowerCase()}`}>
+                <div className="position-header">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <span className={`position-badge ${pos.side.toLowerCase()}`}>{pos.side}</span>
+                    <span className="position-symbol">{pos.symbol}</span>
+                  </div>
+                  <span className={`position-pnl ${pos.pnl >= 0 ? 'positive' : 'negative'}`}>
+                    {pos.pnl >= 0 ? '+' : ''}${pos.pnl.toFixed(2)}
+                  </span>
+                </div>
+                
+                <div className="position-details">
+                  <div className="detail-item">
+                    <span className="label">Entry Price</span>
+                    <span className="value">${pos.entryPrice.toLocaleString()}</span>
+                  </div>
+                  <div className="detail-item">
+                    <span className="label">Current Price</span>
+                    <span className="value">${pos.currentPrice.toLocaleString()}</span>
+                  </div>
+                  <div className="detail-item">
+                    <span className="label">Size</span>
+                    <span className="value">{pos.size}</span>
+                  </div>
+                </div>
+                
+                <button 
+                  onClick={() => onClosePosition(pos.id)} 
+                  className="close-btn"
+                >
+                  Close Position
+                </button>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
