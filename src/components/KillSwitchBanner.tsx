@@ -1,4 +1,4 @@
-import type { KillSwitchLevel, TradingState } from '../types';
+import type { TradingState } from '../types';
 
 interface KillSwitchBannerProps {
   tradingState: TradingState;
