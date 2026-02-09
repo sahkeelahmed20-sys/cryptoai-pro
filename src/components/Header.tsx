@@ -18,6 +18,11 @@ export function Header({ tradingState, prices, isConnected }: HeaderProps) {
           </div>
         ))}
       </div>
+<div className="flex items-center gap-2">
+  <span>AI: {tradingState.aiEnabled ? 'ON' : 'OFF'}</span>
+  <span>Regime: {tradingState.marketRegime}</span>
+</div>
+
       
       <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border ${
         isConnected 
