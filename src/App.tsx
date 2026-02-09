@@ -425,7 +425,7 @@ function App() {
           <Header tradingState={tradingState} prices={prices} isConnected={isConnected} />
           <AIControlPanel 
             tradingState={tradingState}
-            onToggleAI={handleAIToggle}
+            onToggle={handleAIToggle}
           />
           <main className="flex-1 p-6 overflow-auto">
             {renderSection()}
