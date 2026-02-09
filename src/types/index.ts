@@ -50,13 +50,17 @@ export interface Trade {
   timestamp: string;
 }
 
-export type KillSwitchLevel = 'SOFT' | 'HARD' | 'EMERGENCY';
-
-export type MarketRegime = 'TREND' | 'RANGE' | 'VOLATILE' | 'UNKNOWN';
+export type MarketRegime = 'TREND' | 'CHOP' | 'PANIC';
+export type KillSwitchLevel = 'OFF' | 'SOFT' | 'HARD' | 'LOCKED';
 
 export interface TradingState {
+  aiEnabled: boolean;
   isEnabled: boolean;
-  killSwitchLevel: KillSwitchLevel;
   marketRegime: MarketRegime;
-  lastUpdate: number;
+  killSwitchLevel: KillSwitchLevel;
+  killReason: string | null;
+  confidence: number;
+  ensembleScore: number;
+  lastUpdate: string;
 }
+
