@@ -303,7 +303,7 @@ function App() {
                 ) : (
                   positions.map(pos => (
                     <div key={pos.id} className="bg-[#12121a] rounded-xl p-5 mb-3 border border-[#2a2a3a]"
-                      style={{ borderLeft: `4px solid ${pos.side === 'LONG' ? '#00d084' : '#ff4757}'` }}>
+                      style={{ borderLeft: `4px solid ${pos.side === 'LONG' ? '#00d084' : '#ff4757'}` }}>
                       <div className="flex justify-between mb-4">
                         <div className="flex items-center gap-3">
                           <span className={`px-3 py-1 rounded-md text-xs font-bold ${
