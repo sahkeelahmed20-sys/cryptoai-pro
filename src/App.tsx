@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useDemoTrading } from './hooks/useDemoTrading';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
-import { KillSwitchBanner } from './components/KillSwitchBanner';
-import { AIControlPanel } from './components/AIControlPanel';
+import KillSwitchBanner from './components/KillSwitchBanner';
+import AIControlPanel from './components/AIControlPanel';
 import { Toaster } from './components/ui/toaster';
 import { useToast } from './hooks/use-toast';
 
