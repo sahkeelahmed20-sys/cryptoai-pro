@@ -1,6 +1,3 @@
-
-// src/types/index.ts - Keep only ONE declaration of each interface
-
 export interface PriceData {
   symbol: string;
   price: number;
@@ -13,28 +10,53 @@ export interface PriceData {
 
 export interface OrderBook {
   symbol: string;
-  bids: [number, number][];  // [price, quantity]
+  bids: [number, number][];
   asks: [number, number][];
   lastUpdateId: number;
   timestamp: number;
 }
 
-// Add any other unique interfaces below...
+export interface LivePriceData {
+  symbol: string;
+  price: number;
+  change24h: number;
+  volume: number;
+  high24h: number;
+  low24h: number;
+}
+
+export interface Position {
+  id: number;
+  symbol: string;
+  side: 'LONG' | 'SHORT';
+  size: number;
+  entryPrice: number;
+  currentPrice: number;
+  pnl: number;
+  pnlPercent: number;
+  stopLoss?: number;
+  takeProfit?: number;
+  timestamp: string;
+}
+
 export interface Trade {
   id: number;
   symbol: string;
+  side: 'BUY' | 'SELL';
+  type: 'OPEN' | 'CLOSE';
   price: number;
-  quantity: number;
-  time: number;
-  isBuyerMaker: boolean;
+  size: number;
+  pnl?: number;
+  timestamp: string;
 }
 
-export interface Ticker {
-  symbol: string;
-  priceChange: string;
-  priceChangePercent: string;
-  weightedAvgPrice: string;
-  lastPrice: string;
-  volume: string;
-  quoteVolume: string;
+export type KillSwitchLevel = 'SOFT' | 'HARD' | 'EMERGENCY';
+
+export type MarketRegime = 'TREND' | 'RANGE' | 'VOLATILE' | 'UNKNOWN';
+
+export interface TradingState {
+  isEnabled: boolean;
+  killSwitchLevel: KillSwitchLevel;
+  marketRegime: MarketRegime;
+  lastUpdate: number;
 }
