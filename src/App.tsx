@@ -403,7 +403,7 @@ function App() {
     <div className="min-h-screen bg-[#010101] text-[#f6f6f6] font-sans">
       <KillSwitchBanner 
         tradingState={tradingState} 
-        onReset={handleResetKillSwitch}
+        
       />
       <div className="flex">
         <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} />
