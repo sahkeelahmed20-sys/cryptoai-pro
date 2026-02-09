@@ -1,3 +1,20 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #0a0a0a;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
 .connection-status {
   position: fixed;
   top: 10px;
@@ -14,18 +31,17 @@
   color: black;
 }
 
-.connection-status.disconnected {
-  background: #ff1744;
-  color: white;
-}
-
 .top-ticker {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
-  gap: 20px;
+  gap: 30px;
   padding: 10px 20px;
   background: #1a1a1a;
   border-bottom: 1px solid #333;
-  overflow-x: auto;
+  z-index: 100;
 }
 
 .ticker-item {
@@ -35,71 +51,109 @@
   font-size: 14px;
 }
 
-.ticker-item .symbol {
+.symbol {
   color: #888;
   font-weight: bold;
 }
 
-.ticker-item .price {
+.price {
   color: #fff;
   font-weight: bold;
 }
 
-.ticker-item .change.positive {
+.change.positive {
   color: #00c853;
 }
 
-.ticker-item .change.negative {
+.change.negative {
   color: #ff1744;
 }
 
-.position-card {
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 60px 20px 20px;
+  width: 100%;
+}
+
+.market-overview, .demo-trading, .trade-history {
   background: #1e1e1e;
-  border-radius: 8px;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #333;
+}
+
+h2, h3 {
+  margin-bottom: 15px;
+  color: #fff;
+}
+
+.price-card {
+  background: #2a2a2a;
   padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.side-buttons {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button.long, button.active.long {
+  background: #00c853;
+  color: black;
+}
+
+button.short, button.active.short {
+  background: #ff1744;
+  color: white;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  color: #fff;
+  border-radius: 6px;
+}
+
+.positions {
+  margin-top: 20px;
+}
+
+.position {
+  background: #2a2a2a;
+  padding: 15px;
+  border-radius: 8px;
   margin-bottom: 10px;
   border-left: 4px solid;
 }
 
-.position-card.long {
+.position.long {
   border-left-color: #00c853;
 }
 
-.position-card.short {
+.position.short {
   border-left-color: #ff1744;
 }
 
-.badge {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.badge.long {
-  background: #00c853;
-  color: black;
-}
-
-.badge.short {
-  background: #ff1744;
-  color: white;
-}
-
-.pnl.positive {
+.positive {
   color: #00c853;
 }
 
-.pnl.negative {
+.negative {
   color: #ff1744;
-}
-
-button.long {
-  background: #00c853;
-  color: black;
-}
-
-button.short {
-  background: #ff1744;
-  color: white;
 }
