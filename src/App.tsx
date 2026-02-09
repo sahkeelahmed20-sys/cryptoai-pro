@@ -6,21 +6,8 @@ import KillSwitchBanner from './components/KillSwitchBanner';
 import AIControlPanel from './components/AIControlPanel';
 import { Toaster } from './components/ui/toaster';
 import { useToast } from './hooks/use-toast';
-
-// Re-export types for other components
-export type MarketRegime = 'TREND' | 'CHOP' | 'PANIC';
-export type KillSwitchLevel = 'OFF' | 'SOFT' | 'HARD' | 'LOCKED';
-
-export interface TradingState {
-  aiEnabled: boolean;
-  isEnabled: boolean;  // Added missing property
-  marketRegime: MarketRegime;
-  killSwitchLevel: KillSwitchLevel;
-  killReason: string | null;
-  confidence: number;
-  ensembleScore: number;
-  lastUpdate: string;  // Added missing property
-}
+// Import types from the central types file
+import type { TradingState, MarketRegime, KillSwitchLevel } from './types';
 
 function App() {
   const [activeSection, setActiveSection] = useState('dashboard');
@@ -45,13 +32,13 @@ function App() {
 
   const [tradingState, setTradingState] = useState<TradingState>({
     aiEnabled: true,
-    isEnabled: true,  // Added
+    isEnabled: true,
     marketRegime: 'TREND',
     killSwitchLevel: 'OFF',
     killReason: null,
     confidence: 87,
     ensembleScore: 0.72,
-    lastUpdate: new Date().toISOString(),  // Added
+    lastUpdate: new Date().toISOString(),
   });
 
   // Simulate market regime changes
@@ -73,14 +60,14 @@ function App() {
             killSwitchLevel: 'HARD',
             killReason: 'Extreme volatility detected',
             aiEnabled: false,
-            isEnabled: false,  // Added
-            lastUpdate: new Date().toISOString(),  // Added
+            isEnabled: false,
+            lastUpdate: new Date().toISOString(),
           };
         }
         return { 
           ...prev, 
           marketRegime: randomRegime,
-          lastUpdate: new Date().toISOString(),  // Added
+          lastUpdate: new Date().toISOString(),
         };
       });
     }, 15000);
@@ -100,8 +87,8 @@ function App() {
     setTradingState(prev => ({ 
       ...prev, 
       aiEnabled: enabled,
-      isEnabled: enabled,  // Added
-      lastUpdate: new Date().toISOString(),  // Added
+      isEnabled: enabled,
+      lastUpdate: new Date().toISOString(),
     }));
   };
 
@@ -111,8 +98,8 @@ function App() {
       killSwitchLevel: 'OFF',
       killReason: null,
       aiEnabled: true,
-      isEnabled: true,  // Added
-      lastUpdate: new Date().toISOString(),  // Added
+      isEnabled: true,
+      lastUpdate: new Date().toISOString(),
     }));
     toast({
       title: 'Kill Switch Reset',
