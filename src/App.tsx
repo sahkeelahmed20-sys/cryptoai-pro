@@ -13,11 +13,13 @@ export type KillSwitchLevel = 'OFF' | 'SOFT' | 'HARD' | 'LOCKED';
 
 export interface TradingState {
   aiEnabled: boolean;
+  isEnabled: boolean;  // Added missing property
   marketRegime: MarketRegime;
   killSwitchLevel: KillSwitchLevel;
   killReason: string | null;
   confidence: number;
   ensembleScore: number;
+  lastUpdate: string;  // Added missing property
 }
 
 function App() {
@@ -43,11 +45,13 @@ function App() {
 
   const [tradingState, setTradingState] = useState<TradingState>({
     aiEnabled: true,
+    isEnabled: true,  // Added
     marketRegime: 'TREND',
     killSwitchLevel: 'OFF',
     killReason: null,
     confidence: 87,
     ensembleScore: 0.72,
+    lastUpdate: new Date().toISOString(),  // Added
   });
 
   // Simulate market regime changes
@@ -69,9 +73,15 @@ function App() {
             killSwitchLevel: 'HARD',
             killReason: 'Extreme volatility detected',
             aiEnabled: false,
+            isEnabled: false,  // Added
+            lastUpdate: new Date().toISOString(),  // Added
           };
         }
-        return { ...prev, marketRegime: randomRegime };
+        return { 
+          ...prev, 
+          marketRegime: randomRegime,
+          lastUpdate: new Date().toISOString(),  // Added
+        };
       });
     }, 15000);
 
@@ -87,7 +97,12 @@ function App() {
       });
       return;
     }
-    setTradingState(prev => ({ ...prev, aiEnabled: enabled }));
+    setTradingState(prev => ({ 
+      ...prev, 
+      aiEnabled: enabled,
+      isEnabled: enabled,  // Added
+      lastUpdate: new Date().toISOString(),  // Added
+    }));
   };
 
   const handleResetKillSwitch = () => {
@@ -96,6 +111,8 @@ function App() {
       killSwitchLevel: 'OFF',
       killReason: null,
       aiEnabled: true,
+      isEnabled: true,  // Added
+      lastUpdate: new Date().toISOString(),  // Added
     }));
     toast({
       title: 'Kill Switch Reset',
