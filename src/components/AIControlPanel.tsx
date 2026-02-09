@@ -1,4 +1,4 @@
-import type { TradingState, MarketRegime } from '../types';
+import type { TradingState } from '../types';
 
 interface AIControlPanelProps {
   tradingState: TradingState;
@@ -6,13 +6,16 @@ interface AIControlPanelProps {
 }
 
 export default function AIControlPanel({ tradingState, onToggle }: AIControlPanelProps) {
+  // Use marketRegime from tradingState
+  const { isEnabled, marketRegime } = tradingState;
+  
   return (
     <div className="ai-control-panel">
       <h3>AI Trading Engine</h3>
-      <div className="status">{tradingState.isEnabled ? 'Enabled' : 'Disabled'}</div>
-      <div className="regime">Market Regime: {tradingState.marketRegime}</div>
+      <div className="status">{isEnabled ? 'Enabled' : 'Disabled'}</div>
+      <div className="regime">Market Regime: {marketRegime}</div>
       <button onClick={onToggle}>
-        {tradingState.isEnabled ? 'Disable' : 'Enable'}
+        {isEnabled ? 'Disable' : 'Enable'}
       </button>
     </div>
   );
