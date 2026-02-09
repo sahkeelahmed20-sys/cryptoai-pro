@@ -1,81 +1,66 @@
-import api from './api';
+import axios from 'axios';
+
+const BINANCE_API = 'https://api.binance.com/api/v3';
 
 export interface PriceData {
   symbol: string;
   price: number;
   change24h: number;
-  volume24h: number;
+  changePercent24h: number;
   high24h: number;
   low24h: number;
-  timestamp: number;
-}
-
-export interface OrderBook {
-  bids: [number, number][];
-  asks: [number, number][];
-  timestamp: number;
+  volume24h: number;
+  quoteVolume: number;
+  lastUpdated: number;
 }
 
 class MarketDataService {
-  private ws: WebSocket | null = null;
-  private subscribers: Map<string, ((data: PriceData) => void)[]> = new Map();
-
-  async getTopCoins(limit = 100): Promise<PriceData[]> {
-    const response = await api.get(`/market/coins?limit=${limit}`);
-    return response.data;
-  }
-
-  async getPriceHistory(symbol: string, timeframe: string): Promise<any[]> {
-    const response = await api.get(`/market/history/${symbol}?timeframe=${timeframe}`);
-    return response.data;
-  }
-
-  async getOrderBook(symbol: string): Promise<OrderBook> {
-    const response = await api.get(`/market/orderbook/${symbol}`);
-    return response.data;
-  }
-
-  connectWebSocket(symbols: string[]) {
-    const wsUrl = `${import.meta.env.VITE_WS_URL}/prices`;
-    this.ws = new WebSocket(wsUrl);
-
-    this.ws.onopen = () => {
-      console.log('Market data WebSocket connected');
-      this.ws?.send(JSON.stringify({ type: 'subscribe', symbols }));
-    };
-
-    this.ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      this.notifySubscribers(data.symbol, data);
-    };
-
-    this.ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-  }
-
-  subscribe(symbol: string, callback: (data: PriceData) => void) {
-    if (!this.subscribers.has(symbol)) {
-      this.subscribers.set(symbol, []);
-    }
-    this.subscribers.get(symbol)?.push(callback);
-  }
-
-  unsubscribe(symbol: string, callback: (data: PriceData) => void) {
-    const callbacks = this.subscribers.get(symbol) || [];
-    const index = callbacks.indexOf(callback);
-    if (index > -1) {
-      callbacks.splice(index, 1);
+  // Get 24hr stats for multiple coins
+  async get24hrTickers(symbols: string[]): Promise<PriceData[]> {
+    try {
+      const symbolParams = symbols.map(s => `"${s.toUpperCase()}USDT"`).join(',');
+      const response = await axios.get(`${BINANCE_API}/ticker/24hr?symbols=[${symbolParams}]`);
+      
+      return response.data.map((ticker: any) => ({
+        symbol: ticker.symbol.replace('USDT', ''),
+        price: parseFloat(ticker.lastPrice),
+        change24h: parseFloat(ticker.priceChange),
+        changePercent24h: parseFloat(ticker.priceChangePercent),
+        high24h: parseFloat(ticker.highPrice),
+        low24h: parseFloat(ticker.lowPrice),
+        volume24h: parseFloat(ticker.volume),
+        quoteVolume: parseFloat(ticker.quoteVolume),
+        lastUpdated: ticker.closeTime
+      }));
+    } catch (error) {
+      console.error('Binance API Error:', error);
+      return [];
     }
   }
 
-  private notifySubscribers(symbol: string, data: PriceData) {
-    const callbacks = this.subscribers.get(symbol) || [];
-    callbacks.forEach((cb) => cb(data));
-  }
-
-  disconnect() {
-    this.ws?.close();
+  // Get chart data (klines/candles)
+  async getKlines(symbol: string, interval = '1h', limit = 100): Promise<any[]> {
+    try {
+      const response = await axios.get(`${BINANCE_API}/klines`, {
+        params: {
+          symbol: `${symbol.toUpperCase()}USDT`,
+          interval,
+          limit
+        }
+      });
+      
+      return response.data.map((k: number[]) => ({
+        time: k[0],
+        open: parseFloat(k[1]),
+        high: parseFloat(k[2]),
+        low: parseFloat(k[3]),
+        close: parseFloat(k[4]),
+        volume: parseFloat(k[5])
+      }));
+    } catch (error) {
+      console.error('Klines Error:', error);
+      return [];
+    }
   }
 }
 
