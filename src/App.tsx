@@ -1,6 +1,7 @@
 import { useDemoTrading } from './hooks/useDemoTrading';
 import MarketOverview from './sections/MarketOverview';
 import DemoTrading from './sections/DemoTrading';
+import TradeHistory from './sections/TradeHistory';
 import type { KillSwitchLevel, MarketRegime, TradingState } from './types';
 
 // Export types for other components
@@ -54,6 +55,7 @@ function App() {
           onOpenPosition={openPosition}
           onClosePosition={closePosition}
         />
+        <TradeHistory trades={trades} />
       </div>
     </div>
   );
