@@ -1,5 +1,5 @@
+import { useState } from 'react';
 import { useDemoTrading } from './hooks/useDemoTrading';
-import type { TradingState } from './types';
 
 function App() {
   const {
@@ -571,7 +571,5 @@ function App() {
     </div>
   );
 }
-
-import { useState } from 'react';
 
 export default App;
