@@ -26,6 +26,9 @@ export default function DemoTrading({
     onOpenPosition(symbol, side, size);
   };
 
+  // Get current price for selected symbol
+  const currentPrice = prices[symbol] || 0;
+
   return (
     <div className="demo-trading">
       <h2>Demo Trading Account</h2>
@@ -41,6 +44,10 @@ export default function DemoTrading({
           <option value="ETHUSDT">ETH/USDT</option>
           <option value="SOLUSDT">SOL/USDT</option>
         </select>
+
+        <div className="current-price">
+          Current {symbol} Price: ${currentPrice.toLocaleString()}
+        </div>
 
         <div className="side-buttons">
           <button 
