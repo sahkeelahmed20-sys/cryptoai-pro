@@ -1,4 +1,4 @@
-import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '/api',
@@ -8,22 +8,24 @@ const api = axios.create({
   },
 });
 
-// Request interceptor for auth tokens
+// Request interceptor
 api.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
+  (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
     const token = localStorage.getItem('auth_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error: AxiosError): Promise<AxiosError> => {
+    return Promise.reject(error);
+  }
 );
 
-// Response interceptor for error handling
+// Response interceptor
 api.interceptors.response.use(
-  (response) => response,
-  (error: AxiosError) => {
+  (response: AxiosResponse): AxiosResponse => response,
+  (error: AxiosError): Promise<AxiosError> => {
     if (error.response?.status === 401) {
       localStorage.removeItem('auth_token');
       window.location.href = '/login';
