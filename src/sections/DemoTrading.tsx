@@ -28,6 +28,10 @@ export default function DemoTrading({
 
   const currentPrice = prices[symbol] || 0;
 
+  // Calculate available margin
+  const usedMargin = positions.reduce((sum, pos) => sum + (pos.entryPrice * pos.size * 0.1), 0);
+  const availableMargin = balance - usedMargin;
+
   return (
     <div className="card" style={{ marginTop: '20px' }}>
       <div className="card-header">
@@ -35,6 +39,27 @@ export default function DemoTrading({
       </div>
       
       <div className="card-body">
+        {/* Account Stats - Using balance and equity */}
+        <div className="dashboard-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginBottom: '20px' }}>
+          <div className="stat-card">
+            <div className="label">Portfolio Balance</div>
+            <div className="value">${balance.toLocaleString()}</div>
+            <div className="change positive">+2.45%</div>
+          </div>
+          <div className="stat-card">
+            <div className="label">Equity</div>
+            <div className="value">${equity.toLocaleString()}</div>
+            <div className="sub-value">
+              {equity >= balance ? '+' : ''}${(equity - balance).toFixed(2)} unrealized
+            </div>
+          </div>
+          <div className="stat-card">
+            <div className="label">Available Margin</div>
+            <div className="value">${availableMargin.toLocaleString()}</div>
+            <div className="sub-value">${usedMargin.toFixed(0)} used</div>
+          </div>
+        </div>
+
         <div className="trading-panel">
           <select 
             className="symbol-select"
