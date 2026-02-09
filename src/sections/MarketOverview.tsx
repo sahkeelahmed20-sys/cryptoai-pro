@@ -4,6 +4,7 @@ import { binanceWS, LivePriceData } from '../services/binanceWebSocket';
 
 const COINS = ['BTC', 'ETH', 'BNB', 'ADA', 'XRP', 'SOL', 'DOT', 'DOGE'];
 
+// Default export - THIS IS IMPORTANT
 export default function MarketOverview() {
   const [coins, setCoins] = useState<PriceData[]>([]);
   const [loading, setLoading] = useState(true);
