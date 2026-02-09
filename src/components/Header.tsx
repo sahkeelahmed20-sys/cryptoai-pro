@@ -1,4 +1,5 @@
-import type { TradingState } from '../types';  
+import type { TradingState } from '../types';
+  
 
 interface HeaderProps {
   tradingState: TradingState;
