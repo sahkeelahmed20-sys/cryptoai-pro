@@ -5,31 +5,37 @@ interface TradeHistoryProps {
 }
 
 export default function TradeHistory({ trades }: TradeHistoryProps) {
-  if (trades.length === 0) {
-    return <div className="trade-history">No trades yet</div>;
-  }
-
   return (
-    <div className="trade-history">
-      <h3>Trade History ({trades.length})</h3>
-      <div className="trades-list">
-        {trades.map(trade => (
-          <div key={trade.id} className={`trade ${trade.type.toLowerCase()}`}>
-            <span>{trade.type}</span>
-            <span>{trade.side}</span>
-            <span>{trade.symbol}</span>
-            <span>${trade.price.toLocaleString()}</span>
-            <span>Size: {trade.size}</span>
-            {trade.pnl !== undefined && (
-              <span className={trade.pnl >= 0 ? 'positive' : 'negative'}>
-                P&L: ${trade.pnl.toFixed(2)}
-              </span>
-            )}
-            <span className="time">
-              {new Date(trade.timestamp).toLocaleTimeString()}
-            </span>
+    <div className="card">
+      <div className="card-header">
+        <h3>📈 Trade History</h3>
+      </div>
+      
+      <div className="card-body">
+        {trades.length === 0 ? (
+          <div className="empty-state">No trades yet</div>
+        ) : (
+          <div className="trade-list">
+            {trades.map(trade => (
+              <div key={trade.id} className="trade-item">
+                <div className="trade-info">
+                  <div className={`trade-icon ${trade.side.toLowerCase()}`}>
+                    {trade.side === 'BUY' ? '↑' : '↓'}
+                  </div>
+                  <div className="trade-details">
+                    <h4>{trade.type} {trade.symbol}</h4>
+                    <p>{trade.side} @ ${trade.price.toLocaleString()} • Size: {trade.size}</p>
+                  </div>
+                </div>
+                {trade.pnl !== undefined && (
+                  <div className={`trade-pnl ${trade.pnl >= 0 ? 'positive' : 'negative'}`}>
+                    {trade.pnl >= 0 ? '+' : ''}${trade.pnl.toFixed(2)}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
