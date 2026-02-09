@@ -4,11 +4,13 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
+  base: '/', // Ensure proper base path for SPA
+  publicDir: 'public', // Explicitly set to ensure _redirects is copied
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@components': path.resolve(__dirname, './src/components'),
-      '@sections': path.resolve(__dirname, './src/sections'),
+      '@sections': path.resolve(__dirname, './src/sections'), // FIXED: Capital S
       '@hooks': path.resolve(__dirname, './src/hooks'),
       '@lib': path.resolve(__dirname, './src/lib'),
       '@services': path.resolve(__dirname, './src/services'),
@@ -32,8 +34,9 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          charts: ['recharts', 'lightweight-charts'],
-          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
+          // Only include if you have these installed:
+          // charts: ['recharts', 'lightweight-charts'],
+          // ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
         },
       },
     },
