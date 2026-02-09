@@ -6,14 +6,12 @@ import KillSwitchBanner from './components/KillSwitchBanner';
 import AIControlPanel from './components/AIControlPanel';
 import { Toaster } from './components/ui/toaster';
 import { useToast } from './hooks/use-toast';
-// Import types from the central types file
 import type { TradingState, MarketRegime, KillSwitchLevel } from './types';
 
 function App() {
   const [activeSection, setActiveSection] = useState('dashboard');
   const { toast } = useToast();
   
-  // Use the demo trading hook for live prices and trading
   const {
     positions,
     prices,
@@ -41,7 +39,6 @@ function App() {
     lastUpdate: new Date().toISOString(),
   });
 
-  // Simulate market regime changes
   useEffect(() => {
     const interval = setInterval(() => {
       const regimes: MarketRegime[] = ['TREND', 'CHOP', 'PANIC'];
@@ -128,88 +125,81 @@ function App() {
 
   const currentPrice = prices[symbol] || 0;
 
-  // Render sections with live data
   const renderSection = () => {
     switch (activeSection) {
       case 'dashboard':
         return (
-          <>
-            {/* Market Overview with live prices */}
-            <div className="space-y-6">
-              {/* Stats Grid */}
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-[#1a1a24] rounded-2xl p-6 border border-[#2a2a3a]">
-                  <div className="text-[#8b8b9f] text-sm mb-3 uppercase">Portfolio Balance</div>
-                  <div className="text-3xl font-bold mb-2">${balance.toLocaleString()}</div>
-                  <div className="text-[#00d084] text-sm font-bold">+2.45%</div>
-                </div>
-                <div className="bg-[#1a1a24] rounded-2xl p-6 border border-[#2a2a3a]">
-                  <div className="text-[#8b8b9f] text-sm mb-3 uppercase">Equity</div>
-                  <div className="text-3xl font-bold mb-2">${equity.toLocaleString()}</div>
-                  <div className="text-[#8b8b9f] text-sm">+${(equity - balance).toFixed(2)} unrealized</div>
-                </div>
-                <div className="bg-[#1a1a24] rounded-2xl p-6 border border-[#2a2a3a]">
-                  <div className="text-[#8b8b9f] text-sm mb-3 uppercase">Available Margin</div>
-                  <div className="text-3xl font-bold mb-2">
-                    ${(balance - positions.reduce((sum, p) => sum + p.entryPrice * p.size * 0.1, 0)).toLocaleString()}
-                  </div>
-                  <div className="text-[#8b8b9f] text-sm">
-                    ${positions.reduce((sum, p) => sum + p.entryPrice * p.size * 0.1, 0).toFixed(0)} used
-                  </div>
-                </div>
+          <div className="space-y-6">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-[#1a1a24] rounded-2xl p-6 border border-[#2a2a3a]">
+                <div className="text-[#8b8b9f] text-sm mb-3 uppercase">Portfolio Balance</div>
+                <div className="text-3xl font-bold mb-2">${balance.toLocaleString()}</div>
+                <div className="text-[#00d084] text-sm font-bold">+2.45%</div>
               </div>
-
-              {/* Live Prices */}
-              <div className="bg-[#1a1a24] rounded-2xl border border-[#2a2a3a]">
-                <div className="p-6 border-b border-[#2a2a3a] flex items-center justify-between">
-                  <h3 className="text-lg font-bold">🎯 Market Overview</h3>
-                  <div className="flex items-center gap-2 px-4 py-2 bg-[#3742fa]/10 text-[#3742fa] rounded-lg text-sm font-bold">
-                    📈 {tradingState.marketRegime} — Directional bias detected
-                  </div>
-                </div>
-                <div className="p-6">
-                  <div className="flex gap-6 mb-6 p-4 bg-[#12121a] rounded-xl text-sm">
-                    <span>Status: <strong className="text-white">Active</strong></span>
-                    <span>Regime: <strong className="text-white">{tradingState.marketRegime}</strong></span>
-                    <span>Kill Switch: <strong className="text-white">{tradingState.killSwitchLevel}</strong></span>
-                  </div>
-                  {Object.entries(prices).map(([sym, price]) => (
-                    <div key={sym} className="bg-[#12121a] rounded-xl p-5 mb-3 border border-[#2a2a3a] flex justify-between items-center">
-                      <div>
-                        <h4 className="font-bold mb-1">{sym}</h4>
-                        <div className="text-2xl font-bold">${price.toLocaleString()}</div>
-                        <div className="text-[#8b8b9f] text-xs mt-1">Vol: ${((price * 1000000) / 1e6).toFixed(2)}M</div>
-                      </div>
-                      <div className={`text-sm font-bold ${(changes[sym] || 0) >= 0 ? 'text-[#00d084]' : 'text-[#ff4757]'}`}>
-                        {(changes[sym] || 0) >= 0 ? '+' : ''}{(changes[sym] || 0).toFixed(2)}%
-                      </div>
-                    </div>
-                  ))}
-                </div>
+              <div className="bg-[#1a1a24] rounded-2xl p-6 border border-[#2a2a3a]">
+                <div className="text-[#8b8b9f] text-sm mb-3 uppercase">Equity</div>
+                <div className="text-3xl font-bold mb-2">${equity.toLocaleString()}</div>
+                <div className="text-[#8b8b9f] text-sm">+${(equity - balance).toFixed(2)} unrealized</div>
               </div>
-
-              {/* Performance Metrics */}
-              <div className="bg-[#1a1a24] rounded-2xl border border-[#2a2a3a]">
-                <div className="p-6 border-b border-[#2a2a3a]">
-                  <h3 className="text-lg font-bold">📊 Performance Metrics</h3>
+              <div className="bg-[#1a1a24] rounded-2xl p-6 border border-[#2a2a3a]">
+                <div className="text-[#8b8b9f] text-sm mb-3 uppercase">Available Margin</div>
+                <div className="text-3xl font-bold mb-2">
+                  ${(balance - positions.reduce((sum, p) => sum + p.entryPrice * p.size * 0.1, 0)).toLocaleString()}
                 </div>
-                <div className="grid grid-cols-3 gap-6 p-6">
-                  <div className="text-center p-5 bg-[#12121a] rounded-xl">
-                    <div className="text-[#8b8b9f] text-xs mb-3">Total Return</div>
-                    <div className="text-2xl font-bold text-[#00d084]">+2.45%</div>
-                  </div>
-                  <div className="text-center p-5 bg-[#12121a] rounded-xl">
-                    <div className="text-[#8b8b9f] text-xs mb-3">Max Drawdown</div>
-                    <div className="text-2xl font-bold text-[#ff4757]">-3.2%</div>
-                  </div>
-                  <div className="text-center p-5 bg-[#12121a] rounded-xl">
-                    <div className="text-[#8b8b9f] text-xs mb-3">Win Rate</div>
-                    <div className="text-2xl font-bold">68.5%</div>
-                  </div>
+                <div className="text-[#8b8b9f] text-sm">
+                  ${positions.reduce((sum, p) => sum + p.entryPrice * p.size * 0.1, 0).toFixed(0)} used
                 </div>
               </div>
             </div>
-          </>
+
+            <div className="bg-[#1a1a24] rounded-2xl border border-[#2a2a3a]">
+              <div className="p-6 border-b border-[#2a2a3a] flex items-center justify-between">
+                <h3 className="text-lg font-bold">🎯 Market Overview</h3>
+                <div className="flex items-center gap-2 px-4 py-2 bg-[#3742fa]/10 text-[#3742fa] rounded-lg text-sm font-bold">
+                  📈 {tradingState.marketRegime} — Directional bias detected
+                </div>
+              </div>
+              <div className="p-6">
+                <div className="flex gap-6 mb-6 p-4 bg-[#12121a] rounded-xl text-sm">
+                  <span>Status: <strong className="text-white">Active</strong></span>
+                  <span>Regime: <strong className="text-white">{tradingState.marketRegime}</strong></span>
+                  <span>Kill Switch: <strong className="text-white">{tradingState.killSwitchLevel}</strong></span>
+                </div>
+                {Object.entries(prices).map(([sym, price]) => (
+                  <div key={sym} className="bg-[#12121a] rounded-xl p-5 mb-3 border border-[#2a2a3a] flex justify-between items-center">
+                    <div>
+                      <h4 className="font-bold mb-1">{sym}</h4>
+                      <div className="text-2xl font-bold">${price.toLocaleString()}</div>
+                      <div className="text-[#8b8b9f] text-xs mt-1">Vol: ${((price * 1000000) / 1e6).toFixed(2)}M</div>
+                    </div>
+                    <div className={`text-sm font-bold ${(changes[sym] || 0) >= 0 ? 'text-[#00d084]' : 'text-[#ff4757]'}`}>
+                      {(changes[sym] || 0) >= 0 ? '+' : ''}{(changes[sym] || 0).toFixed(2)}%
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-[#1a1a24] rounded-2xl border border-[#2a2a3a]">
+              <div className="p-6 border-b border-[#2a2a3a]">
+                <h3 className="text-lg font-bold">📊 Performance Metrics</h3>
+              </div>
+              <div className="grid grid-cols-3 gap-6 p-6">
+                <div className="text-center p-5 bg-[#12121a] rounded-xl">
+                  <div className="text-[#8b8b9f] text-xs mb-3">Total Return</div>
+                  <div className="text-2xl font-bold text-[#00d084]">+2.45%</div>
+                </div>
+                <div className="text-center p-5 bg-[#12121a] rounded-xl">
+                  <div className="text-[#8b8b9f] text-xs mb-3">Max Drawdown</div>
+                  <div className="text-2xl font-bold text-[#ff4757]">-3.2%</div>
+                </div>
+                <div className="text-center p-5 bg-[#12121a] rounded-xl">
+                  <div className="text-[#8b8b9f] text-xs mb-3">Win Rate</div>
+                  <div className="text-2xl font-bold">68.5%</div>
+                </div>
+              </div>
+            </div>
+          </div>
         );
       
       case 'demo-trading':
@@ -219,7 +209,6 @@ function App() {
               <h3 className="text-lg font-bold">💰 Demo Trading Account</h3>
             </div>
             <div className="p-6">
-              {/* Stats */}
               <div className="grid grid-cols-3 gap-4 mb-6">
                 <div>
                   <div className="text-[#8b8b9f] text-xs mb-1">Portfolio Balance</div>
@@ -242,7 +231,6 @@ function App() {
                 </div>
               </div>
 
-              {/* Trading Form */}
               <div className="flex flex-col gap-4">
                 <select
                   value={symbol}
@@ -297,7 +285,6 @@ function App() {
                 </button>
               </div>
 
-              {/* Positions */}
               <div className="mt-6">
                 <h4 className="mb-4 text-base font-bold">Open Positions ({positions.length})</h4>
                 {positions.length === 0 ? (
@@ -342,7 +329,6 @@ function App() {
                 )}
               </div>
 
-              {/* Trade History */}
               <div className="mt-6">
                 <h4 className="mb-4 text-base font-bold">Trade History ({trades.length})</h4>
                 {trades.length === 0 ? (
@@ -425,7 +411,7 @@ function App() {
           <Header tradingState={tradingState} prices={prices} isConnected={isConnected} />
           <AIControlPanel 
             tradingState={tradingState}
-            onToggle={handleAIToggle}
+            onToggle={handleAIToggle}  // Changed from onToggleAI to onToggle
           />
           <main className="flex-1 p-6 overflow-auto">
             {renderSection()}
