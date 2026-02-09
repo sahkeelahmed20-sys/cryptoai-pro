@@ -6,7 +6,7 @@ import KillSwitchBanner from './components/KillSwitchBanner';
 import AIControlPanel from './components/AIControlPanel';
 import { Toaster } from './components/ui/toaster';
 import { useToast } from './hooks/use-toast';
-import type { TradingState, MarketRegime, KillSwitchLevel } from './types';
+import type { TradingState, MarketRegime,  } from './types';
 
 function App() {
   const [activeSection, setActiveSection] = useState('dashboard');
