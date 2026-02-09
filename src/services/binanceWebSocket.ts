@@ -1,4 +1,4 @@
-import type { PriceData, LivePriceData } from '../types';
+import type { LivePriceData } from '../types';
 
 type PriceCallback = (symbol: string, price: number, change24h: number) => void;
 
@@ -87,4 +87,3 @@ class BinanceWebSocketService {
 }
 
 export const binanceWS = new BinanceWebSocketService();
-export type { LivePriceData };
