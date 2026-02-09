@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
-import { MarketOverview } from './sections/MarketOverview';
+// ✅ Use default import syntax (no curly braces)
+import MarketOverview from './sections/MarketOverview';
 import { AISignals } from './sections/AISignals';
 import { DemoTrading } from './sections/DemoTrading';
 import { Backtesting } from './sections/Backtesting';
