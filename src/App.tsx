@@ -409,10 +409,9 @@ function App() {
         <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} />
         <div className="flex-1 flex flex-col ml-64">
           <Header tradingState={tradingState} prices={prices} isConnected={isConnected} />
-          <AIControlPanel 
-            tradingState={tradingState}
-            onToggle={handleAIToggle}  // Changed from onToggleAI to onToggle
-          />
+           <AIControlPanel 
+  tradingState={tradingState}
+  onToggle={() => handleAIToggle(!tradingState.aiEnabled)}
           <main className="flex-1 p-6 overflow-auto">
             {renderSection()}
           </main>
