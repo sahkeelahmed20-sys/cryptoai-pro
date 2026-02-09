@@ -112,7 +112,7 @@ function App() {
       case 'bitnodes':
         return <BitnodesAnalysis />;
       default:
-        return <MarketOverview tradingState={tradingState} />;
+        return <MarketOverview />;
     }
   };
 
