@@ -1,71 +1,65 @@
-export interface LivePriceData {
-  symbol: string;
-  price: number;
-  changePercent: number;
-  high: number;
-  low: number;
-  volume: number;
-}
+type PriceCallback = (symbol: string, price: number, change24h: number) => void;
 
-export class BinanceWebSocket {
+class BinanceWebSocketService {
   private ws: WebSocket | null = null;
-  private subscribers: Map<string, ((data: LivePriceData) => void)[]> = new Map();
+  private callbacks: Set<PriceCallback> = new Set();
+  private reconnectTimer: NodeJS.Timeout | null = null;
+  private symbols: string[] = [];
+  private isConnected = false;
 
-  connect(symbols: string[]) {
-    if (this.ws?.readyState === WebSocket.OPEN) return;
+  subscribe(callback: PriceCallback) {
+    this.callbacks.add(callback);
+    return () => this.callbacks.delete(callback);
+  }
+
+  connect(symbols: string[] = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT']) {
+    this.symbols = symbols;
+    this.disconnect();
     
-    const streams = symbols.map(s => `${s.toLowerCase()}usdt@ticker`).join('/');
-    this.ws = new WebSocket(`wss://stream.binance.com:9443/ws/${streams}`);
+    const streams = symbols.map(s => `${s.toLowerCase()}@ticker`).join('/');
+    const url = `wss://stream.binance.com:9443/ws/${streams}`;
+    
+    this.ws = new WebSocket(url);
     
     this.ws.onopen = () => {
-      console.log('Binance WebSocket connected');
+      console.log('WebSocket connected');
+      this.isConnected = true;
     };
-
+    
     this.ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      const symbol = data.s.replace('USDT', '');
-      
-      const update: LivePriceData = {
-        symbol: symbol,
-        price: parseFloat(data.c),
-        changePercent: parseFloat(data.P),
-        high: parseFloat(data.h),
-        low: parseFloat(data.l),
-        volume: parseFloat(data.v)
-      };
-      
-      const callbacks = this.subscribers.get(symbol) || [];
-      callbacks.forEach(cb => cb(update));
+      if (data.s && data.c) {
+        const price = parseFloat(data.c);
+        const change24h = parseFloat(data.P);
+        this.callbacks.forEach(cb => cb(data.s, price, change24h));
+      }
     };
-
+    
     this.ws.onerror = (error) => {
       console.error('WebSocket error:', error);
     };
-
+    
     this.ws.onclose = () => {
-      console.log('WebSocket closed');
+      console.log('WebSocket disconnected, reconnecting...');
+      this.isConnected = false;
+      this.reconnectTimer = setTimeout(() => this.connect(this.symbols), 3000);
     };
   }
 
-  subscribe(symbol: string, callback: (data: LivePriceData) => void) {
-    const upperSymbol = symbol.toUpperCase();
-    if (!this.subscribers.has(upperSymbol)) {
-      this.subscribers.set(upperSymbol, []);
-    }
-    this.subscribers.get(upperSymbol)?.push(callback);
-  }
-
-  unsubscribe(symbol: string, callback: (data: LivePriceData) => void) {
-    const callbacks = this.subscribers.get(symbol.toUpperCase()) || [];
-    const index = callbacks.indexOf(callback);
-    if (index > -1) {
-      callbacks.splice(index, 1);
-    }
-  }
-
   disconnect() {
-    this.ws?.close();
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
+    }
+    if (this.ws) {
+      this.ws.close();
+      this.ws = null;
+    }
+  }
+
+  getStatus() {
+    return this.isConnected;
   }
 }
 
-export const binanceWS = new BinanceWebSocket();
+export const binanceWS = new BinanceWebSocketService();
