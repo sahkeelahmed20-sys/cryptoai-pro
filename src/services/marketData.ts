@@ -14,6 +14,12 @@ export interface PriceData {
   lastUpdated: number;
 }
 
+export interface OrderBook {
+  bids: [number, number][];
+  asks: [number, number][];
+  timestamp: number;
+}
+
 class MarketDataService {
   // Get 24hr stats for multiple coins
   async get24hrTickers(symbols: string[]): Promise<PriceData[]> {
@@ -49,13 +55,15 @@ class MarketDataService {
         }
       });
       
-      return response.data.map((k: number[]) => ({
-        time: k[0],
-        open: parseFloat(k[1]),
-        high: parseFloat(k[2]),
-        low: parseFloat(k[3]),
-        close: parseFloat(k[4]),
-        volume: parseFloat(k[5])
+      // Binance returns arrays: [time, open, high, low, close, volume, ...]
+      // All values are strings from API
+      return response.data.map((k: (string | number)[]) => ({
+        time: Number(k[0]),
+        open: parseFloat(String(k[1])),
+        high: parseFloat(String(k[2])),
+        low: parseFloat(String(k[3])),
+        close: parseFloat(String(k[4])),
+        volume: parseFloat(String(k[5]))
       }));
     } catch (error) {
       console.error('Klines Error:', error);
