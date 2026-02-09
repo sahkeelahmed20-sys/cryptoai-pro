@@ -2,6 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { binanceWS } from '../services/binanceWebSocket';
 import type { Position, Trade } from '../types';
 
+// Re-export Position type
+export type { Position };
+
 export function useDemoTrading() {
   const [positions, setPositions] = useState<Position[]>([]);
   const [prices, setPrices] = useState<Record<string, number>>({});
