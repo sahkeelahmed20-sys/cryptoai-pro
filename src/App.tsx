@@ -97,7 +97,7 @@ function App() {
       case 'dashboard':
         return (
           <>
-            <MarketOverview tradingState={tradingState} />
+            <MarketOverview />
             <AISignals tradingState={tradingState} />
           </>
         );
