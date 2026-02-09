@@ -89,20 +89,7 @@ function App() {
     }));
   };
 
-  const handleResetKillSwitch = () => {
-    setTradingState(prev => ({
-      ...prev,
-      killSwitchLevel: 'OFF',
-      killReason: null,
-      aiEnabled: true,
-      isEnabled: true,
-      lastUpdate: new Date().toISOString(),
-    }));
-    toast({
-      title: 'Kill Switch Reset',
-      description: 'AI trading has been re-enabled',
-    });
-  };
+  
 
   const handleOpenPosition = () => {
     openPosition(symbol, side, size);
