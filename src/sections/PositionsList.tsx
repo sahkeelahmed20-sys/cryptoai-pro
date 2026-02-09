@@ -1,11 +1,11 @@
-import { Position } from '../hooks/useDemoTrading';
+import type { Position } from '../types';
 
-interface Props {
+interface PositionsListProps {
   positions: Position[];
   onClose: (id: number) => void;
 }
 
-export function PositionsList({ positions, onClose }: Props) {
+export default function PositionsList({ positions, onClose }: PositionsListProps) {
   if (positions.length === 0) {
     return <div className="positions-empty">No open positions</div>;
   }
