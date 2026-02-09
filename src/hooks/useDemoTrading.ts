@@ -1,30 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { binanceWS } from '../services/binanceWebSocket';
-
-export interface Position {
-  id: number;
-  symbol: string;
-  side: 'LONG' | 'SHORT';
-  size: number;
-  entryPrice: number;
-  currentPrice: number;
-  pnl: number;
-  pnlPercent: number;
-  stopLoss?: number;
-  takeProfit?: number;
-  timestamp: string;
-}
-
-export interface Trade {
-  id: number;
-  symbol: string;
-  side: 'BUY' | 'SELL';
-  type: 'OPEN' | 'CLOSE';
-  price: number;
-  size: number;
-  pnl?: number;
-  timestamp: string;
-}
+import type { Position, Trade } from '../types';
 
 export function useDemoTrading() {
   const [positions, setPositions] = useState<Position[]>([]);
@@ -34,7 +10,6 @@ export function useDemoTrading() {
   const [balance, setBalance] = useState(100000);
   const [equity, setEquity] = useState(100000);
 
-  // WebSocket price updates
   useEffect(() => {
     const unsubscribe = binanceWS.subscribe((symbol, price, change24h) => {
       setPrices(prev => ({ ...prev, [symbol]: price }));
@@ -49,7 +24,6 @@ export function useDemoTrading() {
     };
   }, []);
 
-  // Update positions P&L when prices change
   useEffect(() => {
     setPositions(prev => prev.map(pos => {
       const currentPrice = prices[pos.symbol] || pos.currentPrice;
@@ -67,7 +41,6 @@ export function useDemoTrading() {
     }));
   }, [prices]);
 
-  // Update equity
   useEffect(() => {
     const totalPnl = positions.reduce((sum, pos) => sum + pos.pnl, 0);
     setEquity(balance + totalPnl);
@@ -80,7 +53,7 @@ export function useDemoTrading() {
       return;
     }
 
-    const margin = currentPrice * size * 0.1; // 10% margin
+    const margin = currentPrice * size * 0.1;
     if (margin > balance) {
       alert('Insufficient balance');
       return;
@@ -120,11 +93,9 @@ export function useDemoTrading() {
       const pos = prev.find(p => p.id === positionId);
       if (!pos) return prev;
 
-      // Return margin + P&L to balance
       const margin = pos.entryPrice * pos.size * 0.1;
       setBalance(b => b + margin + pos.pnl);
 
-      // Record trade
       const newTrade: Trade = {
         id: Date.now(),
         symbol: pos.symbol,
@@ -141,10 +112,6 @@ export function useDemoTrading() {
     });
   }, []);
 
-  const closeAllPositions = useCallback(() => {
-    positions.forEach(pos => closePosition(pos.id));
-  }, [positions, closePosition]);
-
   return {
     positions,
     prices,
@@ -154,7 +121,6 @@ export function useDemoTrading() {
     equity,
     openPosition,
     closePosition,
-    closeAllPositions,
     isConnected: binanceWS.getStatus()
   };
 }
